@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temple of Baalshamin</title>
+    <!-- model-viewer -->
+    <script type="module" src="https://unpkg.com/@google/model-viewer@4.0.0" defer></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black; /* Background color */
+            color: white; /* Text color */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .model-container {
+            position: relative; /* Makes the spinner relative to this container */
+            width: 100%;
+            height: 400px; /* Adjust as needed */
+            display: flex; /* Flexbox for easier centering */
+            justify-content: center; /* Horizontally centers the spinner */
+            align-items: center; /* Vertically centers the spinner */
+        }       
+        model-viewer {
+            width: 100%;
+            height: 400px;
+            background-color: black;
+        }
+
+        .spinner {
+            position: absolute; /* Positioning the spinner relative to the 3D model container */            
+            transform: translate(-50%, -50%); /* Correctly shifts the spinner back by half of its width and height */
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3); /* Outer border for the spinner */
+            border-top: 5px solid white; /* Inner border for the spinner animation */
+            border-radius: 50%; /* Making the spinner circular */
+            animation: spin 1s linear infinite; /* Adding rotation animation */
+            z-index: 10; /* Ensuring the spinner stays above the model */
+            box-sizing: border-box; /* Ensuring padding and borders are included in the element's total width and height */
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .hide {
+            display: none;
+        }
+
+
+        #customArButton {
+            position: absolute;
+            bottom: 10px; /* Offset from the bottom of the container */
+            left: 50%; /* Horizontal centering */
+            transform: translateX(-50%); /* Shift left by half the width of the button for precise centering */
+            padding: 10px 20px;
+            background: #000; /* Background color */
+            color: white; /* Text color */
+            border: 2px solid white; /* White outline */
+            border-radius: 20px; /* Rounded corners */
+            cursor: pointer;
+            font-size: 16px; /* Font size */
+            text-align: center; /* Text alignment */
+        }
+        h1 {
+            font-size: 32px; /* Larger font size for the title */
+            text-align: left; /* Align text to the left */
+            margin: 20px 20px 10px 20px; /* Top, Right, Bottom, Left margins */
+        }
+        p.description {
+            color: white; /* Text color */
+            text-align: left; /* Align text to the left */
+            margin: 10px 20px; /* Top and Bottom, Right and Left margins */
+            font-size: 16px; /* Current font size */
+        }
+        /* Language switcher */
+        .language-switcher {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        .language-switcher button {
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0 10px;
+            padding: 5px;
+        }
+        .language-switcher button.active {
+            text-decoration: underline;
+        }
+
+        
+        /* Center text column on desktop */
+        @media (min-width: 768px) {
+            #customArButton {
+                 /*display: none; /* Hide the button on desktop screens */
+            }
+            p.description {
+                max-width: 800px; /* Max width for the text column */
+                margin-left: auto;
+                margin-right: auto;
+                text-align: justify; /* Optional: makes the text look neater */
+            }
+            h1 {
+                text-align: center; /* Center title on desktop */
+            }
+        }
+
+        /* Style for the QR image at the bottom */
+        .qr-code {
+            display: block;
+            margin: 20px auto; /* Centers the QR code with top/bottom margins */
+            max-width: 100%; /* Ensures the image doesn't exceed its container */
+            width: 100%; /* Makes the image take up the full width of the column */
+            max-width: 800px; /* Matches the max width of the text column */
+        }
+
+        #loadingStatus {
+            font-size: 12px;
+            color: grey;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="model-container">
+        <!-- Spinner for loading animation -->
+        <div id="spinner" class="spinner"></div>
+        
+        <model-viewer id="arModel" src="Temple.gltf" scale="0.03 0.03 0.03" ar ar-modes="scene-viewer webxr quick-look" environment-image="neutral" auto-rotate camera-controls>
+            <!-- Hidden slot element used by Model Viewer for the custom AR button -->
+            <button slot="ar-button" id="customArButton">View in AR</button>
+        </model-viewer>
+    </div>
+    
+    <!-- Language switcher -->
+    <div class="language-switcher">
+        <button id="enButton" class="active" onclick="switchLanguage('en')">EN</button> | 
+        <button id="frButton" onclick="switchLanguage('fr')">FR</button>
+    </div>
+
+    <!-- Title and description -->
+    <h1>Temple of Baalshamin</h1>
+    <p class="description" id="descriptionText">
+        The 2nd century CE Baalshamin Temple in Palmyra, a unique example of the fusion of Syrian and Roman architecture, was destroyed by Daesh in August 2015. This project creates a virtual, diachronic 3D reconstruction of the temple, integrating scans of architectural elements prepared by Iconem in 2016, with digitized materials from the archives of the Swiss archaeologist Paul Collart who documented the site in the 1930s-60s.
+        <br><br>
+        This project was implemented by the Paul Collart Association in the Middle East, at the University of Lausanne (UNIL), from 2019 to 2022.
+    </p>
+
+    
+    <!-- QR Code image -->
+    <img src="QR.png" alt="QR Code" class="qr-code">
+
+    <script defer>
+
+        // Language switch function
+        function switchLanguage(lang) {
+            const title = document.querySelector('h1');
+            if (lang === 'en') {
+                descriptionText.innerHTML = `
+                    The 2nd century CE Baalshamin Temple in Palmyra, a unique example of the fusion of Syrian and Roman architecture, was destroyed by Daesh in August 2015. This project creates a virtual, diachronic 3D reconstruction of the temple, integrating scans of architectural elements prepared by Iconem in 2016, with digitized materials from the archives of the Swiss archaeologist Paul Collart who documented the site in the 1930s-60s.
+                    <br><br>
+                    This project was implemented by the Paul Collart Association in the Middle East, at the University of Lausanne (UNIL), from 2019 to 2022.
+                `;
+                title.textContent = 'Temple of Baalshamin'; // English title
+                enButton.classList.add('active');
+                frButton.classList.remove('active');
+            } else if (lang === 'fr') {
+                descriptionText.innerHTML = `
+                    Le temple de Baalshamin à Palmyre, qui date du IIe siècle de notre ère, est un exemple unique de la rencontre entre les architectures syrienne et romaine. Il a été complètement détruit par Daech en août 2015. Le projet a permis de réaliser une restauration numérique de ce temple, à partir des scans d'éléments architecturaux préparés par Iconem en 2016 et des données numérisées provenant des archives de l'archéologue suisse Paul Collart, qui a documenté le site dans les années 1930-1960.
+                    <br><br>
+                    Ce projet a été mis en œuvre par l'Association Paul Collart au Proche-Orient, à l’Université de Lausanne (UNIL), de 2019 à 2022.
+                `;
+                title.textContent = 'Temple de Baalshamin'; // French title
+                enButton.classList.remove('active');
+                frButton.classList.add('active');
+            }
+        }
+
+        // Show AR button only on mobile devices (phones and tablets) and hide the spinner when the model is fully loaded
+        document.addEventListener("DOMContentLoaded", () => {
+            const arModel = document.getElementById('arModel');
+            const spinner = document.getElementById('spinner');
+            const customArButton = document.getElementById('customArButton');
+            
+            arModel.addEventListener('model-visibility', (event) => {
+                if (event.detail.visible) {
+                    setTimeout(() => {
+                        spinner.classList.add('hide'); // Hide loading spinner
+
+                        // Check if the device is mobile or tablet based on userAgent
+                        const isMobileOrTablet = /Mobi|Android|iPad|iPhone/i.test(navigator.userAgent);
+                        if (isMobileOrTablet) {
+                            customArButton.style.display = 'block'; // Show AR button on mobile and tablet devices
+                        }
+                    }, 300); // 300 ms delay for smoother transition
+                }
+            });
+
+            // Fix for iOS Safari - force re-render to prevent freezing issue
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+                arModel.addEventListener('load', () => {
+                    setTimeout(() => {
+                        arModel.model?.updateWorldMatrix(true, true);
+                    }, 500);
+                });
+            }
+        });
+
+    </script>
+</body>
+</html>
